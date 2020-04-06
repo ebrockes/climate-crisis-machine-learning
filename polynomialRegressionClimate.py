@@ -41,9 +41,9 @@ def clean_anomaly_value(raw_value):
 def viz_polymonial(X,y):
     plt.scatter(X, y, color='red')
     plt.plot(X, pol_reg.predict(poly_reg.fit_transform(X)), color='blue')
-    plt.title('Truth or Bluff (Linear Regression)')
-    plt.xlabel('Position level')
-    plt.ylabel('Salary')
+    plt.title('Climate (Polynomial Regression)')
+    plt.xlabel('Date')
+    plt.ylabel('Temperature')
     plt.show()
     return
     
