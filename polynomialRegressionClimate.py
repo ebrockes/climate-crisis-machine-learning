@@ -47,6 +47,21 @@ def viz_polymonial(X,y):
     plt.show()
     return
     
+def addTestValues(X, y):
+    numero = len(X)
+    ultimo = X[numero-1][0]
+    result = np.arange('2021-01', '2040-12', dtype='datetime64[M]')
+    contador = 0
+    for i in result:
+        if contador > 0:
+            X_new = np.datetime64(i, 'D') - np.timedelta64(1, 'D')
+            arrayX = np.array([X_new])
+            X = np.append(X, arrayX).reshape(len(X)+1,1)
+            y = np.append(y, np.empty([1,1], dtype=object)) 
+        contador = contador + 1
+    viz_polymonial(X, y)
+
+    
 def getX(temp_X):
     result = []
     for i in temp_X:
@@ -92,9 +107,9 @@ t['Avg_Anomaly_deg_C'] = t['Avg_Anomaly_deg_C'].apply(lambda raw_value: clean_an
 t.fillna(method='ffill', inplace=True)
 
 y=np.array(t['Avg_Anomaly_deg_C'].values, dtype=float)
-temp=np.array(pd.to_datetime(t['Avg_Anomaly_deg_C']).index.values, dtype=float)
+temp=np.array(pd.to_datetime(t['Avg_Anomaly_deg_C'], format='%Y%m%d', errors='ignore').index.values)
 tempX = getX(list(temp))
-X=np.array(tempX, dtype=float)
+X=np.array(tempX)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
@@ -103,4 +118,4 @@ X_poly = poly_reg.fit_transform(X)
 pol_reg = LinearRegression()
 pol_reg.fit(X_poly, y)
 
-viz_polymonial(X,y)
+addTestValues(X,y)
