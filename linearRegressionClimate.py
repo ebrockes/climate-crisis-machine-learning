@@ -13,6 +13,8 @@ from sklearn.model_selection import train_test_split
 
 # Fitting Linear Regression to the dataset
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
 
 # Function definition
 def populate_df_with_anomolies_from_row(row):
@@ -98,5 +100,13 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 lin_reg = LinearRegression()
 lin_reg.fit(X, y)
+
+pred_train_lr= lin_reg.predict(X_train)
+print('RMSE: ', np.sqrt(mean_squared_error(y_train,pred_train_lr)))
+print('r2: ',r2_score(y_train, pred_train_lr))
+
+pred_test_lr= lin_reg.predict(X_test)
+print('RMSE: ',np.sqrt(mean_squared_error(y_test,pred_test_lr))) 
+print('r2: ',r2_score(y_test, pred_test_lr))
 
 viz_linear()
