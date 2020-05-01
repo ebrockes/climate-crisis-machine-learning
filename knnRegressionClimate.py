@@ -16,6 +16,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.metrics import mean_squared_error 
 from math import sqrt
+from sklearn.metrics import r2_score
 
 # Function definition
 def populate_df_with_anomolies_from_row(row):
@@ -103,14 +104,17 @@ rmse_val = [] #to store rmse values for different k
 for K in range(20):
     K = K+1
     model = neighbors.KNeighborsRegressor(n_neighbors = K)
-
     model.fit(X_train, y_train)  #fit the model
-    pred=model.predict(X_test) #make prediction on test set
-    error = sqrt(mean_squared_error(y_test,pred)) #calculate rmse
-    rmse_val.append(error) #store rmse values
-    print('RMSE value for k= ' , K , 'is:', error)
+    pred_test=model.predict(X_test) #make prediction on test set
+    pred_train=model.predict(X_train)
+    pred_test = model.predict(X_test)
+    print('K: ', K)
+    print('Root mean squared error (train): %.2f' % np.sqrt(mean_squared_error(y_train, pred_train)))
+    print('Coefficient of determination (train): %.2f (1 is perfect) ' % r2_score(y_train, pred_train))
+    print('Root mean squared error (test): %.2f' % np.sqrt(mean_squared_error(y_test, pred_test)))
+    print('Coefficient of determination (test): %.2f (1 is perfect) ' % r2_score(y_test, pred_test))
 
-model = neighbors.KNeighborsRegressor(n_neighbors = 2)
+model = neighbors.KNeighborsRegressor(n_neighbors = 1)
 model.fit(X_train, y_train)  #fit the model
 
 viz_knn(X,y)

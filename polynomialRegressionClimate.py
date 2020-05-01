@@ -11,6 +11,8 @@ import calendar
 from datetime import datetime
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split 
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
 
 # Fitting Linear Regression to the dataset
 from sklearn.preprocessing import PolynomialFeatures
@@ -40,7 +42,7 @@ def clean_anomaly_value(raw_value):
 
 def viz_polymonial(X,y):
     plt.scatter(X, y, color='red')
-    plt.plot(X, pol_reg.predict(poly_reg.fit_transform(X)), color='blue')
+    plt.plot(X, lin_reg.predict(poly_reg.fit_transform(X)), color='blue')
     plt.title('Climate (Polynomial Regression)')
     plt.xlabel('Date')
     plt.ylabel('Temperature')
@@ -111,11 +113,18 @@ temp=np.array(pd.to_datetime(t['Avg_Anomaly_deg_C'], format='%Y%m%d', errors='ig
 tempX = getX(list(temp))
 X=np.array(tempX)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
 poly_reg = PolynomialFeatures(degree=3)
 X_poly = poly_reg.fit_transform(X)
-pol_reg = LinearRegression()
-pol_reg.fit(X_poly, y)
+X_train, X_test, y_train, y_test = train_test_split(X_poly, y, random_state=0)
+lin_reg = LinearRegression().fit(X_train, y_train)
+
+pred_train = lin_reg.predict(X_train)
+pred_test = lin_reg.predict(X_test)
+print('Root mean squared error (train): %.2f' % np.sqrt(mean_squared_error(y_train, pred_train)))
+print('Coefficient of determination (train): %.2f (1 is perfect) ' % r2_score(y_train, pred_train))
+print('Root mean squared error (test): %.2f' % np.sqrt(mean_squared_error(y_test, pred_test)))
+print('Coefficient of determination (test): %.2f (1 is perfect) ' % r2_score(y_test, pred_test))
+print('R-squared score (training): ', lin_reg.score(X_train, y_train))
+print('R-squared score (test): ', lin_reg.score(X_test, y_test))
 
 addTestValues(X,y)
