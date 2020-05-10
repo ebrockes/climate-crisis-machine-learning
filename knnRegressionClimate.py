@@ -117,4 +117,14 @@ for K in range(20):
 model = neighbors.KNeighborsRegressor(n_neighbors = 1)
 model.fit(X_train, y_train)  #fit the model
 
+pred_train = model.predict(X_train)
+pred_test = model.predict(X_test)
+print('Root mean squared error (train): %.2f' % np.sqrt(mean_squared_error(y_train, pred_train)))
+print('Coefficient of determination (train): %.2f (1 is perfect) ' % r2_score(y_train, pred_train))
+print('Root mean squared error (test): %.2f' % np.sqrt(mean_squared_error(y_test, pred_test)))
+print('Coefficient of determination (test): %.2f (1 is perfect) ' % r2_score(y_test, pred_test))
+print('R-squared score (training): ', model.score(X_train, y_train))
+print('R-squared score (test): ', model.score(X_test, y_test))
+
+
 viz_knn(X,y)
